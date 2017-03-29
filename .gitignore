@@ -16,3 +16,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# for manual 1.0.1 build; see readme
+/firebaseui-web
