@@ -1,16 +1,9 @@
 import React, {Component} from 'react'
+import './Firebase'
 import firebase from 'firebase'
 import firebaseui from 'firebaseui'
 import 'firebaseui/dist/firebaseui.css'
 
-// from web console > 'web setup', top right
-firebase.initializeApp({
-  apiKey: "AIzaSyA9FtfmUsc6bVj8wFlDUAaFCVEgnFxg4vY",
-  authDomain: "fir-test-5ea52.firebaseapp.com",
-  databaseURL: "https://fir-test-5ea52.firebaseio.com",
-  storageBucket: "fir-test-5ea52.appspot.com",
-  messagingSenderId: "1038984913127"
-})
 let anonUser = null;
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
@@ -24,7 +17,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         anonUser.delete().then(() => {
           console.log("deleted anonymous user")
         }, error => {
-          console.warning("failed to delete anonymous user", error)
+          console.warn("failed to delete anonymous user", error)
         })
       }
     }
@@ -34,7 +27,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     firebase.auth().signInAnonymously().then(res => {
       console.log("anonymous signin success", res, firebase.auth().currentUser)
     }, error => {
-      console.warning("anonymous signin error", error)
+      console.warn("anonymous signin error", error)
     })
   }
 })
