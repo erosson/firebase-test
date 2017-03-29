@@ -62,6 +62,33 @@ function withState(WrappedComponent) {
   }
 }
 
+class QueueCount extends React.Component {
+  componentWillMount() {
+    this.setState({value: null})
+    this.dbref = firebase.database().ref('/secure/queuecount')
+    this.dbref.on('value', snapshot => {
+      this.setState({value: snapshot.val()})
+    })
+  }
+  componentWillUnmount() {
+    this.dbref.off('value')
+  }
+  incrfail() {
+    this.dbref.set(this.state.value + 1)
+  }
+  enqueue() {
+    console.log({user: firebase.auth().currentUser.uid})
+    firebase.database().ref('/queue').push({user: firebase.auth().currentUser.uid})
+  }
+  render() {
+    return <span>
+      {this.state.value}
+      <button onClick={() => this.incrfail()}>incr (disallowed)</button>
+      <button onClick={() => this.enqueue()}>enqueue</button>
+    </span>
+  }
+}
+
 export default withState(function render({state, dbref}) {
   function push() {
     dbref.set({count: state.count})
@@ -87,5 +114,6 @@ export default withState(function render({state, dbref}) {
     <button onClick={clickIncrement}>++</button>
     <button onClick={clickDouble}>&times;2</button>
     <button onClick={clickZero}>0</button>
+    <p>secure queue count: <QueueCount /></p>
   </div>
 })

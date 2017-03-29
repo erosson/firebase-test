@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/functions/node_modules
 
 # testing
 /coverage
@@ -18,3 +19,6 @@ yarn-error.log*
 
 # for manual 1.0.1 build; see readme
 /firebaseui-web
+
+
+*.swp
