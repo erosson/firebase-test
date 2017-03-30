@@ -76,14 +76,27 @@ class QueueCount extends React.Component {
   incrfail() {
     this.dbref.set(this.state.value + 1)
   }
+  enqueueFakeTime() {
+    const message = {
+      user: firebase.auth().currentUser.uid,
+      time: Date.now(),
+    }
+    console.log(message)
+    firebase.database().ref('/queue').push(message)
+  }
   enqueue() {
-    console.log({user: firebase.auth().currentUser.uid})
-    firebase.database().ref('/queue').push({user: firebase.auth().currentUser.uid})
+    const message = {
+      user: firebase.auth().currentUser.uid,
+      time: firebase.database.ServerValue.TIMESTAMP,
+    }
+    console.log(message)
+    firebase.database().ref('/queue').push(message)
   }
   render() {
     return <span>
       {this.state.value}
       <button onClick={() => this.incrfail()}>incr (disallowed)</button>
+      <button onClick={() => this.enqueueFakeTime()}>enqueue fake time(disallowed)</button>
       <button onClick={() => this.enqueue()}>enqueue</button>
     </span>
   }

@@ -8,9 +8,13 @@
       "$id": {
         // no deletes or updates, only writes
         ".write": "auth !== null && !data.exists() && newData.exists()",
-        ".validate": "newData.hasChildren(['user'])",
+        ".validate": "newData.hasChildren(['user', 'time'])",
         "user": {
           ".validate": "newData.val() === auth.uid"
+        },
+        "time": {
+          // https://stackoverflow.com/questions/25433016/how-do-you-use-security-rules-to-prevent-a-user-from-faking-firebase-servervalue/25433017#25433017
+          ".validate": "newData.val() === now"
         }
       }
     },
