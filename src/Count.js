@@ -102,6 +102,36 @@ class QueueCount extends React.Component {
   }
 }
 
+// https://firebase.google.com/docs/database/web/offline-capabilities#section-latency
+class ServerTime extends React.Component {
+  componentWillMount() {
+    this.dbref = firebase.database().ref('/.info/serverTimeOffset')
+    this.dbref.on('value', snapshot => {
+      this.setState({offset: snapshot.val()})
+    })
+    window.setInterval(() => {
+      if (this.state.offset) {
+        this.setState({now: Date.now()})
+      }
+    }, 100)
+  }
+  componentWillUnmount() {
+    this.dbref.off('value')
+  }
+  now() {
+    return this.state.now
+  }
+  serverNow() {
+    return this.now() + this.state.offset
+  }
+  render() {
+    return <div>
+      <p>local time: {new Date(this.now())+''}</p>
+      <p>server time: {new Date(this.serverNow())+''} (offset: {this.state.offset})</p>
+    </div>
+  }
+}
+
 export default withState(function render({state, dbref}) {
   function push() {
     dbref.set({count: state.count})
@@ -128,5 +158,6 @@ export default withState(function render({state, dbref}) {
     <button onClick={clickDouble}>&times;2</button>
     <button onClick={clickZero}>0</button>
     <p>secure queue count: <QueueCount /></p>
+    <ServerTime />
   </div>
 })
